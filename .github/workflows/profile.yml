@@ -1,0 +1,33 @@
+name: GitHub-Profile-Summary-Cards
+
+on:
+  create:
+  push:
+  schedule: # execute every Monday At 05:30 on
+    - cron: "30 5 * * MON"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: generate
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: vn7n24fzkq/github-profile-summary-cards@release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          USERNAME: ${{ github.repository_owner }}
+          
+      - uses: yoshi389111/github-profile-3d-contrib@0.7.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          USERNAME: ${{ github.repository_owner }}
+      - name: Commit & Push
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add -A .
+          git commit -m "updated stats"
+          git push
